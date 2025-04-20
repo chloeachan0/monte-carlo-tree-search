@@ -102,7 +102,7 @@ class SushiGoGUI(tk.Tk):
         mcts  = MonteCarloTreeSearch(root)
 
         # search for one secs
-        best_node = mcts.best_action(total_simulation_seconds=1)
+        best_node = mcts.best_action(total_simulation_seconds=2)
 
         self.state = best_node.state
 
