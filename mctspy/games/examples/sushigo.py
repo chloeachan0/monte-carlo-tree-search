@@ -250,9 +250,7 @@ class SushiGoGameState(TwoPlayersAbstractGameState):
         elif move == ['cannot move']: 
             return True
         # get cur player's deck
-        cur_deck = self.player1_cards
-        if self.next_to_move == 1: 
-            cur_deck = self.player2_cards
+        cur_deck = self.player1_cards if self.next_to_move == 1 else self.player2_cards
 
         for card in move: 
             if card.chosen_card not in cur_deck: 
@@ -273,37 +271,36 @@ class SushiGoGameState(TwoPlayersAbstractGameState):
             
             # determine cur player and remove card(s) from their deck to their 
             if self.next_to_move == self.player1:
-                # currently player2 deck remove
-                prev_length = len(self.player2_cards)
+                prev_length = len(self.player1_cards)
                 for card in cards_to_remove: 
                     # print('p1 move', card.chosen_card)
                     if card != 'cannot move': 
-                        game_state_cpy.player2_cards.remove(card.chosen_card)
-                        game_state_cpy.player2_cards_chosen.append(card.chosen_card)
+                        game_state_cpy.player1_cards.remove(card.chosen_card)
+                        game_state_cpy.player1_cards_chosen.append(card.chosen_card)
                 # just makign sure the card is actually removed
                 # assert(len(game_state_cpy.player2_cards) < len(self.player2_cards))
                 # assert(len(game_state_cpy.player2_cards) < prev_length)
 
                 # putting chopsticks back in hand
                 for i in range(chop_count): 
-                    game_state_cpy.player2_cards.append(Card.chopsticks)
+                    game_state_cpy.player1_cards.append(Card.chopsticks)
 
                 game_state_cpy.next_to_move = self.player2
             else:
                 # currently player1 deck remove
-                prev_length = len(self.player1_cards)
+                prev_length = len(self.player2_cards)
                 for card in cards_to_remove: 
                     # print('p2 move', card.chosen_card)
                     if card != 'cannot move': 
-                        game_state_cpy.player1_cards.remove(card.chosen_card)
-                        game_state_cpy.player1_cards_chosen.append(card.chosen_card)
+                        game_state_cpy.player2_cards.remove(card.chosen_card)
+                        game_state_cpy.player2_cards_chosen.append(card.chosen_card)
                 # just makign sure the card is actually removed
                 # assert(len(game_state_cpy.player1_cards) < len(self.player1_cards))
                 # assert(len(game_state_cpy.player1_cards) < prev_length)
                 
                 # put chopsticks back in hand 
                 for i in range(chop_count): 
-                    game_state_cpy.player1_cards.append(Card.chopsticks)
+                    game_state_cpy.player2_cards.append(Card.chopsticks)
                 
                 game_state_cpy.next_to_move = self.player1
         
@@ -329,38 +326,23 @@ class SushiGoGameState(TwoPlayersAbstractGameState):
                 chop2 += 1
         return (chop1, chop2)
     
+    # returns List[List[SushiGoMove]] legal for the cur plater 
     def get_legal_actions(self):
-        # chopstick count to determine possible legal actions
-        chop_count = self.count_chopsticks()
 
-        if self.next_to_move == self.player1: 
-            # player 2 
-            actions = [SushiGoMove(card) for card in self.player2_cards]
-            legal_actions = [[SushiGoMove(card)] for card in self.player2_cards]
-            for i in range(chop_count[1]-1): 
-               legal_actions.extend([list(comb) for comb in combinations(actions, 2*(i+1))])     
-        else: 
-            # player 1
-            actions = [SushiGoMove(card) for card in self.player1_cards]
-            legal_actions = [[SushiGoMove(card)] for card in self.player1_cards]
-            for i in range(chop_count[0]-1): 
-                legal_actions.extend([list(comb) for comb in combinations(actions, 2*(i+1))])
+        chop_p1, chop_p2 = self.count_chopsticks()
 
-        possible_choices = []
-        possible_choices1 = []
-        for x in legal_actions: 
-            action_lst = []
-            action_lst1 = []
-            for item in x: 
-                action_lst1.append(self.map_card(item.chosen_card)) # will not work when item can be a list of two cards
-                action_lst.append(item.chosen_card)
-            possible_choices.append(action_lst)
-            possible_choices1.append(action_lst1)
-        
-        # no possible moves 
-        if legal_actions == []: 
-            return [['cannot move']]
-        assert(legal_actions != [])
-        # print('legal moves')
-        # print(possible_choices1)
-        return legal_actions
+        if self.next_to_move == self.player1: #p1 turn
+            actions = [SushiGoMove(c) for c in self.player1_cards]
+            legal  = [[m] for m in actions] # single cards
+            for k in range(chop_p1 - 1): # multi‑card w/cs (not sure this how it works)
+                legal.extend([list(comb)
+                                for comb in combinations(actions, 2*(k + 1))])
+
+        else: #p2s turn
+            actions = [SushiGoMove(c) for c in self.player2_cards]
+            legal  = [[m] for m in actions]
+            for k in range(chop_p2 - 1):
+                legal.extend([list(comb)
+                                for comb in combinations(actions, 2*(k + 1))])
+
+        return legal if legal else [['cannot move']]
