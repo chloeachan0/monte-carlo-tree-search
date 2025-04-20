@@ -8,7 +8,7 @@ import sys, os
 if __name__ == "__main__": 
     # disable print statements
     #sys.stdout = open(os.devnull, 'w')
-    state = SushiGoGameState(next_to_move=1, tot_cards=4)
+    state = SushiGoGameState(next_to_move=1, tot_cards=10)
     count = 0 
     # assert tot cards = even
     while state.game_result is None:
@@ -19,13 +19,8 @@ if __name__ == "__main__":
         best_node = mcts.best_action(total_simulation_seconds=1)
 
         state = best_node.state
-        # print(state.display_cards())
-        # print('player 1 curweroiu score', state.player1_cur_score)
-        # print('player 2 curq3rioew score', state.player2_cur_score)
-        # print(state.num_rounds)
-        # count += 1
-        # if count == 2:
-        #     break
-    print('player 1 final score', state.player1_cur_score)
-    print('player 2 final score', state.player2_cur_score)
+        print(state.display_cards())
+        
+    print('player 1 final score', state.p1_score)
+    print('player 2 final score', state.p2_score)
  
