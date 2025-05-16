@@ -23,7 +23,7 @@ class ValueNet(nn.Module):
 
 if __name__ == "__main__":  # this breaks without this
 
-    vecs, zs = zip(*pickle.load(open("selfplay_10000g_0.05s.pkl", "rb")))
+    vecs, zs = zip(*pickle.load(open("selfplay_12000g_0.40s.pkl", "rb")))
     X = torch.tensor(vecs, dtype=torch.float32)
     y = torch.tensor(zs, dtype=torch.float32)
     dataset = TensorDataset(X, y)
@@ -43,4 +43,4 @@ if __name__ == "__main__":  # this breaks without this
             opt.step()
         print(f"epoch {epoch:02d}  loss {loss.item():.4f}")
 
-    torch.save(net.state_dict(), "value_net.pt")
+    torch.save(net.state_dict(), "value_net2.pt")

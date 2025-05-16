@@ -8,7 +8,7 @@ from train_value import ValueNet
 class ValueNetWrapper:
     "Loads the net once and keeps it on GPU/CPU."
 
-    def __init__(self, path="value_net.pt", device="cpu"):
+    def __init__(self, path="value_net2.pt", device="cpu"):
         self.net = ValueNet().to(device)
         self.net.load_state_dict(torch.load(path, map_location=device))
         self.net.eval()

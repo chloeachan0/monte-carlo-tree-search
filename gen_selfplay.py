@@ -5,8 +5,8 @@ from mctspy.tree.search import MonteCarloTreeSearch
 from mctspy.games.examples.sushigo import SushiGoGameState
 from mctspy.tree.nodes import TwoPlayersGameMonteCarloTreeSearchNode as BaseNode
 
-GAMES = 10_000
-SIM_SEC = 0.05  # per move
+GAMES = 12_000
+SIM_SEC = 0.4  # per move
 N_PROC = mp.cpu_count() - 1  # leave one core free
 
 
