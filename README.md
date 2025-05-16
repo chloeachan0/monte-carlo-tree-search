@@ -18,8 +18,6 @@ After a few self-play training loops the bot routinely beats expert-level humans
 ## Quick start – Play now! <a name="quick-start--play-now"></a>
 
 ```bash
-git clone https://github.com/your-user/sushigo-showdown.git
-cd sushigo-showdown
 
 python -m venv sg_env
 source sg_env/bin/activate # Windows: sg_env\Scripts\activate
